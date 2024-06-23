@@ -1,40 +1,44 @@
+import { OrderbookService } from '../domain/orderbook.service'
+
 const UPDATE_ORDERBOOK = 'UPDATE_ORDERBOOK'
-const INCREMENT_PRECISION = 'INCREMENT_PRECISION'
-const DECREMENT_PRECISION = 'DECREMENT_PRECISION'
+const UPDATE_PRECISION = 'UPDATE_PRECISION'
 
 export const orderbookSelector = state => state.orderbook
-export const precisionSelector = state => state.precision
+export const precisionSelector = state => state.orderbook.precision
 
 export const updateOrderbookAction = ({ payload }) => ({
   type: UPDATE_ORDERBOOK,
   payload,
 })
 export const decrementPrecision = () => ({
-  type: DECREMENT_PRECISION,
+  type: UPDATE_PRECISION,
   payload: -1,
 })
 export const incrementPrecision = () => ({
-  type: INCREMENT_PRECISION,
+  type: UPDATE_PRECISION,
   payload: 1,
 })
 
 export const orderbookMiddl = () => next => action => {
   if (action.type === UPDATE_ORDERBOOK) next(action)
-  else if (action.type === INCREMENT_PRECISION) next(action)
-  else if (action.type === DECREMENT_PRECISION) next(action)
+  else if (action.type === UPDATE_PRECISION) next(action)
   else next(action)
 }
 
-export const orderbookReducer = (state = { precision: 2, asks: {}, bids: {} }, action) => {
+export const orderbookReducer = (
+  state = { precision: 0, ...OrderbookService.initOrderBook() },
+  action
+) => {
   switch (action.type) {
     case UPDATE_ORDERBOOK:
-      return { ...state, ...action.payload }
+      return { ...state, asks: action.payload.asks, bids: action.payload.bids }
 
-    case INCREMENT_PRECISION:
-      return { ...state, precision: state.precision + action.payload }
-
-    case DECREMENT_PRECISION:
-      return { ...state, precision: state.precision + action.payload }
+    case UPDATE_PRECISION:
+      const precision = OrderbookService.updatePrecision({
+        currentValue: state.precision,
+        offset: action.payload,
+      })
+      return { ...OrderbookService.initOrderBook(), precision }
 
     default:
       return state

@@ -10,10 +10,10 @@ import { WebSocketClient } from '../../shared/infra/services/websockets/client'
 
 export let wsOrderBookSingleton = null
 
-export const orderBookInitWS = ({ repository, dispatch, precision }) => {
+export const orderBookInitWS = ({ repository, dispatch, precision, orderBook }) => {
   const onmessageHandler = ({ data }) =>
     dispatch(updateOrderbookAction({ payload: OrderbookService.createCollection({ data }) }))
-  const { ws } = repository({ onmessageHandler, precision })
+  const { ws } = repository({ onmessageHandler, precision, orderBook })
   WebSocketClient.handleClose(wsOrderBookSingleton)
   wsOrderBookSingleton = ws
 }
@@ -23,7 +23,12 @@ export const useFetchOrderbookUseCase = ({ repository }) => {
   const orderbooks = useSelector(orderbookSelector)
   const precision = useSelector(precisionSelector)
   useEffect(() => {
-    orderBookInitWS({ repository, dispatch, precision })
+    orderBookInitWS({
+      repository,
+      dispatch,
+      precision,
+      orderBook: OrderbookService.initOrderBook(),
+    })
     return () => wsOrderBookSingleton.close()
   }, [])
   return { message: orderbooks }

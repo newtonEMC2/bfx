@@ -23,10 +23,10 @@ export default function OrdersbookTable({ data }) {
         <TableBody>
           {Object.keys(data).map(row => (
             <TableRow key={row}>
-              <TableCell align="right">{data[row].count}</TableCell>
-              <TableCell align="right">{data[row].amount}</TableCell>
-              <TableCell align="right">{data[row].total}</TableCell>
-              <TableCell align="right">{data[row].price}</TableCell>
+              <TableCell align="right">{String(data[row].count)}</TableCell>
+              <TableCell align="right">{String(data[row].amount)}</TableCell>
+              <TableCell align="right">{String(data[row].total)}</TableCell>
+              <TableCell align="right">{String(data[row].price)}</TableCell>
             </TableRow>
           ))}
         </TableBody>

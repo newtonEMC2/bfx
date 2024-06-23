@@ -1,6 +1,11 @@
 import { WebSocketClient } from '../../client'
 
-export const WebsocketBTCUSDorderbookRepository = ({ onmessageHandler, precision }) => {
+const toApiDTO = precision => {
+  if (typeof precision === typeof 0) return `P${precision}`
+  return `P0`
+}
+
+export const WebsocketBTCUSDorderbookRepository = ({ onmessageHandler, precision, orderBook }) => {
   //@TODO: base url should come from env variables
   const ws = new WebSocketClient('wss://api-pub.bitfinex.com/ws/2')
   ws.onopen = () => {
@@ -9,24 +14,19 @@ export const WebsocketBTCUSDorderbookRepository = ({ onmessageHandler, precision
         event: 'subscribe',
         channel: 'book',
         symbol: 'tBTCUSD',
-        prec: precision,
+        prec: toApiDTO(precision),
       })
     )
   }
 
   ws.onmessage = ({ data }) => {
-    onmessageHandler({ data: toDomainInstanceDTO({ data }) })
+    onmessageHandler({ data: toDomainInstanceDTO({ data, orderBook }) })
   }
 
   return { ws }
 }
 
-let orderBook = {
-  bids: {},
-  asks: {},
-}
-
-const toDomainInstanceDTO = ({ data }) => {
+const toDomainInstanceDTO = ({ data, orderBook }) => {
   handleMessage({ data })
 
   function handleMessage({ data }) {
