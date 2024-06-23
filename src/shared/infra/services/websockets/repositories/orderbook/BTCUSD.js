@@ -1,6 +1,6 @@
 import { WebSocketClient } from '../../client'
 
-export const WebsocketBTCUSDorderbookRepository = ({ onmessageHandler }) => {
+export const WebsocketBTCUSDorderbookRepository = ({ onmessageHandler, precision }) => {
   //@TODO: base url should come from env variables
   const ws = new WebSocketClient('wss://api-pub.bitfinex.com/ws/2')
   ws.onopen = () => {
@@ -9,6 +9,7 @@ export const WebsocketBTCUSDorderbookRepository = ({ onmessageHandler }) => {
         event: 'subscribe',
         channel: 'book',
         symbol: 'tBTCUSD',
+        prec: precision,
       })
     )
   }

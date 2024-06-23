@@ -7,6 +7,10 @@ import {
 import { WebSocketClient } from '../../../../services/websockets/client'
 import { WebsocketBTCUSDorderbookRepository } from '../../../../services/websockets/repositories/orderbook/BTCUSD'
 import { useDispatch } from 'react-redux'
+import {
+  useDecreasePrecision,
+  useIncreasePrecision,
+} from '../../../../../../dashboard/application/useOrderBookPrecisionUseCase'
 
 export const MainHeader = () => {
   const dispatch = useDispatch()
@@ -17,6 +21,22 @@ export const MainHeader = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             BITFINEX
           </Typography>
+          <ButtonGroup variant="contained" aria-label="Basic button group">
+            <Button
+              onClick={() =>
+                useDecreasePrecision({ repository: WebsocketBTCUSDorderbookRepository, dispatch })
+              }
+            >
+              decrease precision
+            </Button>
+            <Button
+              onClick={() =>
+                useIncreasePrecision({ repository: WebsocketBTCUSDorderbookRepository, dispatch })
+              }
+            >
+              increase precision
+            </Button>
+          </ButtonGroup>
           <ButtonGroup variant="contained" aria-label="Basic button group">
             <Button
               onClick={() =>

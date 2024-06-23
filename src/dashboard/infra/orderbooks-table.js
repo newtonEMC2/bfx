@@ -22,7 +22,7 @@ export default function OrdersbookTable({ data }) {
         </TableHead>
         <TableBody>
           {Object.keys(data).map(row => (
-            <TableRow key={row.name}>
+            <TableRow key={row}>
               <TableCell align="right">{data[row].count}</TableCell>
               <TableCell align="right">{data[row].amount}</TableCell>
               <TableCell align="right">{data[row].total}</TableCell>
